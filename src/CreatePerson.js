@@ -20,6 +20,13 @@ export function CreatePerson() {
         try {
             let res = await fetch("http://localhost:8989/web/person/create", {
                 method: "POST",
+                headers: {
+                    'Access-Control-Allow-Methods': 'POST',
+                    'Access-Control-Allow-Origin': 'http://localhost:8989',
+                    'Accept': 'application/json',
+                    'Content-Type' : 'application/json;charset=UTF-8',
+                    'X-User-Lang' : 'rus'
+                },
                 body: JSON.stringify({
                     name: name,
                     patronymic: patronymic,
@@ -33,7 +40,7 @@ export function CreatePerson() {
                     about: about
                 }),
             });
-            await res.json();
+            const response = await res.json();
             if (res.status === 200) {
                 setName(null);
                 setPatronymic(null);
@@ -47,7 +54,7 @@ export function CreatePerson() {
                 setAbout(null);
                 setMessage("Информация о человеке успешно добавлена");
             } else {
-                setMessage(res.json());
+                setMessage(response);
             }
         } catch (err) {
             console.log(err);

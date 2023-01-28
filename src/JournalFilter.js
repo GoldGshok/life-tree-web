@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Table from "./journal/Table";
+import './styles/styles.scss';
 
 export function JournalFilter() {
 
-    const [data, setData] = useState({person : []})
+    const [persons, setPersons] = useState({ persons : []})
 
     const [name, setName] = useState(null);
     const [patronymic, setPatronymic] = useState(null);
@@ -17,31 +18,51 @@ export function JournalFilter() {
 
     const [message, setMessage] = useState("");
 
-    let handleSubmit = async (e) => {
+    useEffect(() => {
+        handleSubmit();
+    });
+
+    const callRequest = async () => {
+        const response = await fetch("http://localhost:8989/web/person/get-journal", {
+            method: "POST",
+            headers: {
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Origin': 'http://localhost:8989',
+                'Accept': 'application/json',
+                'Content-Type' : 'application/json;charset=UTF-8',
+                'X-User-Lang' : 'rus'
+            },
+            body: JSON.stringify({
+                name: name,
+                patronymic: patronymic,
+                surname: surname,
+                lastSurname: lastSurname,
+                birthday: birthday,
+                deathday: deathday,
+                limit : 10,
+                offset : 0
+                // genderId: genderId,
+                // fatherId: fatherId,
+                // motherId: motherId,
+            }),
+        });
+        const jsonResponse = await response.json();
+        if (response.status === 200) {
+            return jsonResponse;
+        } else {
+            setMessage(response.statusText);
+            return jsonResponse;
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            let res = await fetch("http://localhost:8989/web/person/get-journal", {
-                method: "POST",
-                body: JSON.stringify({
-                    name: name,
-                    patronymic: patronymic,
-                    surname: surname,
-                    lastSurname: lastSurname,
-                    birthday: birthday,
-                    deathday: deathday
-                    // genderId: genderId,
-                    // fatherId: fatherId,
-                    // motherId: motherId,
-                }),
-            });
-            await res.json();
-            if (res.status === 200) {
-                setData(res.get('items'))
-            } else {
-                setMessage(res.statusText);
-            }
+            const response = await callRequest();
+            setPersons(response.items);
         } catch (err) {
             console.log(err);
+            return [];
         }
     };
 
@@ -85,10 +106,11 @@ export function JournalFilter() {
                     onChange={(e) => setDeathday(e.target.value)}
                 />
 
-                <button type="submit">Create</button>
+                <button type="submit">Поиск</button>
                 <div className="message">{message ? <p>{message}</p> : null}</div>
             </form>
-            <Table persons={data}/>
+
+            <Table persons={persons}/>
         </div>
     );
 

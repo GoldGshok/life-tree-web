@@ -4,12 +4,11 @@ import { JournalFilter } from './JournalFilter';
 
 function App() {
   return (
-    <div>
+    <div className="main">
+        <CreatePerson/>
         <JournalFilter/>
     </div>
-    // <div>
-    //     <CreatePerson/>
-    // </div>
+
   );
 }
 

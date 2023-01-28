@@ -1,13 +1,11 @@
 import {useState} from "react";
 
 const TableCell = ({ item }) => {
-    const [state, setState] = useState(item);
+    const [state] = useState(item);
 
     return (
         <div className="table__cell">
-            <input
-                value={state}
-                type="text" />
+            <label>{state}</label>
         </div>
     )
 }
