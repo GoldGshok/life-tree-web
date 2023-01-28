@@ -2,17 +2,17 @@ import { useState } from "react";
 
 export function CreatePerson() {
 
-    const [name, setName] = useState("");
-    const [patronymic, setPatronymic] = useState("");
-    const [surname, setSurname] = useState("");
-    const [lastSurname, setLastSurname] = useState("");
-    const [birthday, setBirthday] = useState("");
-    const [deathday, setDeathday] = useState("");
-    const [genderId, setGenderId] = useState("");
-    const [fatherId, setFatherId] = useState("");
-    const [motherId, setMotherId] = useState("");
-    const [about, setAbout] = useState("");
-    const [message, setMessage] = useState("");
+    const [name, setName] = useState(null);
+    const [patronymic, setPatronymic] = useState(null);
+    const [surname, setSurname] = useState(null);
+    const [lastSurname, setLastSurname] = useState(null);
+    const [birthday, setBirthday] = useState(null);
+    const [deathday, setDeathday] = useState(null);
+    const [genderId, setGenderId] = useState(null);
+    const [fatherId, setFatherId] = useState(null);
+    const [motherId, setMotherId] = useState(null);
+    const [about, setAbout] = useState(null);
+    const [message, setMessage] = useState(null);
 
 
     let handleSubmit = async (e) => {
@@ -35,19 +35,19 @@ export function CreatePerson() {
             });
             await res.json();
             if (res.status === 200) {
-                this.setName("");
-                this.setPatronymic("");
-                this.setSurname("");
-                this.setLastSurname("");
-                this.setBirthday("");
-                this.setDeathday("");
-                this.setGenderId("");
-                this.setFatherId("");
-                this.setMotherId("");
-                this.setAbout("");
-                setMessage("User created successfully");
+                setName(null);
+                setPatronymic(null);
+                setSurname(null);
+                setLastSurname(null);
+                setBirthday(null);
+                setDeathday(null);
+                setGenderId(null);
+                setFatherId(null);
+                setMotherId(null);
+                setAbout(null);
+                setMessage("Информация о человеке успешно добавлена");
             } else {
-                setMessage("Some error occured");
+                setMessage(res.json());
             }
         } catch (err) {
             console.log(err);
@@ -66,55 +66,55 @@ export function CreatePerson() {
                 type="text"
                 value={patronymic}
                 placeholder="Отчество"
-                onChange={(e) => this.setPatronymic(e.target.value)}
+                onChange={(e) => setPatronymic(e.target.value)}
             />
             <input
                 type="text"
                 value={surname}
                 placeholder="Фамилия"
-                onChange={(e) => this.setSurname(e.target.value)}
+                onChange={(e) => setSurname(e.target.value)}
             />
             <input
                 type="text"
                 value={lastSurname}
                 placeholder="Предыдущая фамилия"
-                onChange={(e) => this.setLastSurname(e.target.value)}
+                onChange={(e) => setLastSurname(e.target.value)}
             />
             <input
                 type="date"
                 value={birthday}
                 placeholder="Дата рождения"
-                onChange={(e) => this.setBirthday(e.target.value)}
+                onChange={(e) => setBirthday(e.target.value)}
             />
             <input
                 type="date"
                 value={deathday}
                 placeholder="Дата смерти"
-                onChange={(e) => this.setDeathday(e.target.value)}
+                onChange={(e) => setDeathday(e.target.value)}
             />
             <input
                 type="text"
                 value={genderId}
                 placeholder="Пол"
-                onChange={(e) => this.setGenderId(e.target.value)}
+                onChange={(e) => setGenderId(e.target.value)}
             />
             <input
                 type="text"
                 value={fatherId}
                 placeholder="Папа"
-                onChange={(e) => this.setFatherId(e.target.value)}
+                onChange={(e) => setFatherId(e.target.value)}
             />
             <input
                 type="text"
                 value={motherId}
                 placeholder="Мама"
-                onChange={(e) => this.setMotherId(e.target.value)}
+                onChange={(e) => setMotherId(e.target.value)}
             />
             <input
                 type="text"
                 value={about}
                 placeholder="О человеке"
-                onChange={(e) => this.setAbout(e.target.value)}
+                onChange={(e) => setAbout(e.target.value)}
             />
 
             <button type="submit">Create</button>
