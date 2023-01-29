@@ -56,7 +56,6 @@ export function JournalFilter() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
         try {
             const response = await callRequest();
             setPersons(response.items);

@@ -1,7 +1,9 @@
 import TableCell from "./TableCell";
+import PersonEdit from "../PersonEdit";
 
 const TableRow = ({person}) => {
     const {
+        id,
         name,
         patronymic,
         surname,
@@ -26,6 +28,7 @@ const TableRow = ({person}) => {
             <TableCell item={fatherId} />
             <TableCell item={motherId} />
             <TableCell item={about} />
+            <PersonEdit personId={id}/>
         </div>
     )
 };
