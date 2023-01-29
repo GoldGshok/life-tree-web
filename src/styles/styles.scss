@@ -1,7 +1,7 @@
 .table {
   display: flex;
   flex-direction: column;
-  width: 800px;
+  width: 100%;
 }
 
 .table__row {
@@ -12,7 +12,8 @@
 
   &--header {
     font-weight: bold;
-    height: 45px;
+    height: 50px;
+    width: 90%;
   }
 }
 
@@ -20,6 +21,7 @@
 .table__cell {
   border: 1px solid #999;
   width: 130px;
+  height: 30px;
 
   label {
     border: none;
