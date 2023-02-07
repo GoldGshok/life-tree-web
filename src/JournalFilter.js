@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Table from "./journal/Table";
 import './styles/styles.scss';
+import {CreatePerson} from "./CreatePerson";
 
 export function JournalFilter() {
 
@@ -39,11 +40,11 @@ export function JournalFilter() {
                 lastSurname: lastSurname,
                 birthday: birthday,
                 deathday: deathday,
-                limit : 10,
-                offset : 0
                 // genderId: genderId,
                 // fatherId: fatherId,
                 // motherId: motherId,
+                limit : 10,
+                offset : 0
             }),
         });
         const jsonResponse = await response.json();
@@ -55,7 +56,7 @@ export function JournalFilter() {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async () => {
         try {
             const response = await callRequest();
             setPersons(response.items);
@@ -109,6 +110,7 @@ export function JournalFilter() {
                 <div className="message">{message ? <p>{message}</p> : null}</div>
             </form>
 
+            <CreatePerson/>
             <Table persons={persons}/>
         </div>
     );

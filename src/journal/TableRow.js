@@ -24,7 +24,7 @@ const TableRow = ({person}) => {
             <TableCell item={lastSurname} />
             <TableCell item={birthday} />
             <TableCell item={deathday} />
-            <TableCell item={genderId} />
+            <TableCell item={genderId === 1 ? "муж" : "жен"} />
             <TableCell item={fatherId} />
             <TableCell item={motherId} />
             <TableCell item={about} />

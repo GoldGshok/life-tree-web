@@ -1,4 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 export function CreatePerson() {
 
@@ -12,11 +15,14 @@ export function CreatePerson() {
     const [fatherId, setFatherId] = useState(null);
     const [motherId, setMotherId] = useState(null);
     const [about, setAbout] = useState(null);
-    const [message, setMessage] = useState(null);
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
 
-    let handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
             let res = await fetch("http://localhost:8989/web/person/create", {
                 method: "POST",
@@ -52,9 +58,9 @@ export function CreatePerson() {
                 setFatherId(null);
                 setMotherId(null);
                 setAbout(null);
-                setMessage("Информация о человеке успешно добавлена");
+                handleClose();
             } else {
-                setMessage(response);
+                console.log(response);
             }
         } catch (err) {
             console.log(err);
@@ -62,71 +68,108 @@ export function CreatePerson() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                value={name}
-                placeholder="Имя"
-                onChange={(e) => setName(e.target.value)}
-            />
-            <input
-                type="text"
-                value={patronymic}
-                placeholder="Отчество"
-                onChange={(e) => setPatronymic(e.target.value)}
-            />
-            <input
-                type="text"
-                value={surname}
-                placeholder="Фамилия"
-                onChange={(e) => setSurname(e.target.value)}
-            />
-            <input
-                type="text"
-                value={lastSurname}
-                placeholder="Предыдущая фамилия"
-                onChange={(e) => setLastSurname(e.target.value)}
-            />
-            <input
-                type="date"
-                value={birthday}
-                placeholder="Дата рождения"
-                onChange={(e) => setBirthday(e.target.value)}
-            />
-            <input
-                type="date"
-                value={deathday}
-                placeholder="Дата смерти"
-                onChange={(e) => setDeathday(e.target.value)}
-            />
-            <input
-                type="text"
-                value={genderId}
-                placeholder="Пол"
-                onChange={(e) => setGenderId(e.target.value)}
-            />
-            <input
-                type="text"
-                value={fatherId}
-                placeholder="Папа"
-                onChange={(e) => setFatherId(e.target.value)}
-            />
-            <input
-                type="text"
-                value={motherId}
-                placeholder="Мама"
-                onChange={(e) => setMotherId(e.target.value)}
-            />
-            <input
-                type="text"
-                value={about}
-                placeholder="О человеке"
-                onChange={(e) => setAbout(e.target.value)}
-            />
+        <>
+            <Button variant="primary" onClick={handleShow}>
+                Создать
+            </Button>
 
-            <button type="submit">Create</button>
-            <div className="message">{message ? <p>{message}</p> : null}</div>
-        </form>
+            <Modal show={show} onHide={handleClose}
+                   size="lg"
+                   dialogClassName="modal-90w"
+                   aria-labelledby="contained-modal-title-vcenter"
+                   centered="true">
+                <Modal.Header closeButton>
+                    <Modal.Title>Создание человека</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Label>Имя</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Иван"
+                                autoFocus
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                            <Form.Label>Отчество</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Отчество"
+                                onChange={(e) => setPatronymic(e.target.value)}
+                            />
+                            <Form.Label>Фамилия</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Фамилия"
+                                onChange={(e) => setSurname(e.target.value)}
+                            />
+                            <Form.Label>Прошлая фамилия</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Фамилия"
+                                onChange={(e) => setLastSurname(e.target.value)}
+                            />
+                            <Form.Label>День рождения</Form.Label>
+                            <Form.Control
+                                type="date"
+                                placeholder="День рождения"
+                                onChange={(e) => setBirthday(e.target.value)}
+                            />
+                            <Form.Label>День смерти</Form.Label>
+                            <Form.Control
+                                type="date"
+                                placeholder="День смерти"
+                                onChange={(e) => setDeathday(e.target.value)}
+                            />
+                            <Form.Label>Пол</Form.Label>
+                            <Form.Group controlId="gender">
+                                <Form.Check
+                                    label="муж"
+                                    type="radio"
+                                    value={1}
+                                    aria-label="radio 1"
+                                    defaultChecked={true}
+                                    onChange={(e) => setGenderId(e.target.value)}
+                                    checked={genderId === "1"}
+                                />
+                                <Form.Check
+                                    label="жен"
+                                    type="radio"
+                                    value={2}
+                                    aria-label="radio 2"
+                                    onChange={(e) => setGenderId(e.target.value)}
+                                    checked={genderId === "2"}
+                                />
+                            </Form.Group>
+                            <Form.Label>Мама</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Мама"
+                                onChange={(e) => setMotherId(e.target.value)}
+                            />
+                            <Form.Label>Папа</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Папа"
+                                onChange={(e) => setFatherId(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                            <Form.Label>О человеке</Form.Label>
+                            <Form.Control as="textarea" rows={3} onChange={(e) => setAbout(e.target.value)} />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleSubmit}>
+                        Сохранить
+                    </Button>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Отмена
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 
 }
