@@ -6,13 +6,15 @@
 
 .table__row {
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
+  grid-template-columns: repeat(11, 2fr);
   text-align: center;
   height: 30px;
 
   &--header {
+    background-color: lightgray;
     font-weight: bold;
-    height: 50px;
+    height: 60px;
+    position: sticky;
     width: 90%;
   }
 }

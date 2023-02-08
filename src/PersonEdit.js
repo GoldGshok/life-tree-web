@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { Typeahead, withAsync } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 function PersonEdit(props) {
 
     const { personId } = props;
-    const AsyncTypeahead = withAsync(Typeahead);
 
+    const [id, setId] = useState(null);
     const [name, setName] = useState(null);
     const [patronymic, setPatronymic] = useState(null);
     const [surname, setSurname] = useState(null);
@@ -24,12 +24,12 @@ function PersonEdit(props) {
 
     const [show, setShow] = useState(false);
 
-    const [options, setOptions] = useState(null);
+    const [options, setOptions] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = async () => {
         setShow(true);
-        console.log(personId);
         const res = await fetch("http://localhost:8989/web/person/get-by-id", {
             method: "POST",
             headers: {
@@ -45,6 +45,7 @@ function PersonEdit(props) {
         });
         const response = await res.json();
         if (res.status === 200) {
+            setId(response.id);
             setName(response.name);
             setPatronymic(response.patronymic);
             setSurname(response.surname);
@@ -74,6 +75,7 @@ function PersonEdit(props) {
                     'X-User-Lang' : 'rus'
                 },
                 body: JSON.stringify({
+                    id: id,
                     name: name,
                     patronymic: patronymic,
                     surname: surname,
@@ -107,6 +109,39 @@ function PersonEdit(props) {
         }
     };
 
+    const handleSearch = (query, genderId) => {
+        setIsLoading(true);
+
+        const fio = query.split(" ");
+
+        fetch("http://localhost:8989/web/autocomplete/get-persons-by-full-name", {
+            method: "POST",
+            headers: {
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Origin': 'http://localhost:8989',
+                'Accept': 'application/json',
+                'Content-Type' : 'application/json;charset=UTF-8',
+                'X-User-Lang' : 'rus'
+            },
+            body: JSON.stringify({
+                name: fio[1],
+                patronymic: fio[2],
+                surname: fio[0],
+                genderId : genderId
+            }),
+            })
+            .then(response => response.json())
+            .then(json => {
+                const persons = json.items.map(item => ({
+                    id: item.id,
+                    name: item.surname + ' ' + item.name + ' ' + item.patronymic
+                }));
+                console.log(persons);
+                setOptions(persons);
+                setIsLoading(false);
+            });
+    };
+
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
@@ -123,7 +158,7 @@ function PersonEdit(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Group className="mb-3" controlId="editForm">
                             <Form.Label>Имя</Form.Label>
                             <Form.Control
                                 type="text"
@@ -186,45 +221,27 @@ function PersonEdit(props) {
                                     checked={genderId === 2}
                                 />
                             </Form.Group>
-                            <Form.Group>
+                            {/*<Form.Group>*/}
                                 <Form.Label>Мама</Form.Label>
                                 <AsyncTypeahead
-                                    id="basic-example"
-                                    labelKey={option => `${option.id}`}
-                                    onSearch={(query) => {
-                                        fetch("http://localhost:8989/web/autocomplete/get-persons-by-full-name", {
-                                                method: "POST",
-                                                headers: {
-                                                'Access-Control-Allow-Methods': 'POST',
-                                                'Access-Control-Allow-Origin': 'http://localhost:8989',
-                                                'Accept': 'application/json',
-                                                'Content-Type' : 'application/json;charset=UTF-8',
-                                                'X-User-Lang' : 'rus'
-                                            },
-                                                body: JSON.stringify({
-                                                name: query,
-                                                patronymic: patronymic,
-                                                surname: surname
-                                            }),
-                                            })
-                                            .then(response => response.json())
-                                            .then(json => setOptions(json))
-                                    }}
+                                    id="mother-autocomplete"
+                                    isLoading={isLoading}
+                                    filterBy={() => true}
+                                    labelKey="name"
+                                    minLength={3}
+                                    onSearch={query => handleSearch(query, 2)}
                                     options={options}
-                                    placeholder="Мама">
+                                    onChange={selected => {
+                                        setMotherId(selected.id);
+                                        console.log(selected);
+                                    }}
+                                    placeholder="Фамилия Имя Отчество">
                                 </AsyncTypeahead>
-                            </Form.Group>
-
-                            {/*<Form.Select*/}
-                            {/*    type="text"*/}
-                            {/*    placeholder="Мама"*/}
-                            {/*    value={motherId}*/}
-                            {/*    onChange={(e) => setMotherId(e.target.value)}*/}
-                            {/*/>*/}
+                            {/*</Form.Group>*/}
                             <Form.Label>Папа</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Папа"
+                                placeholder="Фамилия Имя Отчество"
                                 value={fatherId}
                                 aria-label={fatherName}
                                 onChange={(e) => setFatherId(e.target.value)}

@@ -20,8 +20,8 @@ export function JournalFilter() {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        handleSubmit();
-    });
+        // handleSubmit();
+    }, []);
 
     const callRequest = async () => {
         const response = await fetch("http://localhost:8989/web/person/get-journal", {
@@ -56,7 +56,8 @@ export function JournalFilter() {
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
             const response = await callRequest();
             setPersons(response.items);
