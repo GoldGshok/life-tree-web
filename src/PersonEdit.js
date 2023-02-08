@@ -88,7 +88,6 @@ function PersonEdit(props) {
                     about: about
                 }),
             });
-            const response = await res.json();
             if (res.status === 200) {
                 setName(null);
                 setPatronymic(null);
@@ -98,11 +97,13 @@ function PersonEdit(props) {
                 setDeathday(null);
                 setGenderId(null);
                 setFatherId(null);
+                setFatherName(null);
                 setMotherId(null);
+                setMotherName(null);
                 setAbout(null);
                 handleClose();
             } else {
-                console.log(response);
+                console.log(res);
             }
         } catch (err) {
             console.log(err);
@@ -221,31 +222,36 @@ function PersonEdit(props) {
                                     checked={genderId === 2}
                                 />
                             </Form.Group>
-                            {/*<Form.Group>*/}
-                                <Form.Label>Мама</Form.Label>
-                                <AsyncTypeahead
-                                    id="mother-autocomplete"
-                                    isLoading={isLoading}
-                                    filterBy={() => true}
-                                    labelKey="name"
-                                    minLength={3}
-                                    onSearch={query => handleSearch(query, 2)}
-                                    options={options}
-                                    onChange={selected => {
-                                        setMotherId(selected.id);
-                                        console.log(selected);
-                                    }}
-                                    placeholder="Фамилия Имя Отчество">
-                                </AsyncTypeahead>
-                            {/*</Form.Group>*/}
+                            <Form.Label>Мама</Form.Label>
+                            <AsyncTypeahead
+                                id="mother-autocomplete"
+                                isLoading={isLoading}
+                                filterBy={() => true}
+                                labelKey="name"
+                                minLength={3}
+                                // defaultInputValue={motherName.length > 0 ? motherName : null}
+                                onSearch={query => handleSearch(query, 2)}
+                                options={options}
+                                onChange={selected => {
+                                    setMotherId(selected[0].id);
+                                }}
+                                placeholder="Фамилия Имя Отчество">
+                            </AsyncTypeahead>
                             <Form.Label>Папа</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Фамилия Имя Отчество"
-                                value={fatherId}
-                                aria-label={fatherName}
-                                onChange={(e) => setFatherId(e.target.value)}
-                            />
+                            <AsyncTypeahead
+                                id="father-autocomplete"
+                                isLoading={isLoading}
+                                filterBy={() => true}
+                                labelKey="name"
+                                minLength={3}
+                                // defaultInputValue={fatherName.length > 0 ? fatherName : null}
+                                onSearch={query => handleSearch(query, 1)}
+                                options={options}
+                                onChange={selected => {
+                                    setFatherId(selected[0].id);
+                                }}
+                                placeholder="Фамилия Имя Отчество">
+                            </AsyncTypeahead>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>О человеке</Form.Label>

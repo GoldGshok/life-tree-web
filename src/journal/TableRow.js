@@ -11,8 +11,8 @@ const TableRow = ({person}) => {
         birthday,
         deathday,
         genderId,
-        fatherId,
-        motherId,
+        fatherFullName,
+        motherFullName,
         about
     } = person
 
@@ -25,8 +25,8 @@ const TableRow = ({person}) => {
             <TableCell item={birthday} />
             <TableCell item={deathday} />
             <TableCell item={genderId === 1 ? "муж" : "жен"} />
-            <TableCell item={fatherId} />
-            <TableCell item={motherId} />
+            <TableCell item={fatherFullName} />
+            <TableCell item={motherFullName} />
             <TableCell item={about} />
             <PersonEdit personId={id}/>
         </div>
