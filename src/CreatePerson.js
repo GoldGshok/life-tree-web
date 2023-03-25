@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import {AsyncTypeahead} from "react-bootstrap-typeahead";
 
-export function CreatePerson() {
+export function CreatePerson({onJournalUpdate}) {
 
     const [name, setName] = useState(null);
     const [patronymic, setPatronymic] = useState(null);
@@ -18,13 +19,53 @@ export function CreatePerson() {
 
     const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
+    const [options, setOptions] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleClose = () => {
+        setShow(false);
+    }
     const handleShow = () => setShow(true);
 
+    const handleSearch = (query, genderId) => {
+        setIsLoading(true);
+
+        const fio = query.split(" ");
+
+        fetch("http://localhost:8989/web/autocomplete/get-persons-by-full-name", {
+            method: "POST",
+            headers: {
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Origin': 'http://localhost:8989',
+                'Accept': 'application/json',
+                'Content-Type' : 'application/json;charset=UTF-8',
+                'X-User-Lang' : 'rus'
+            },
+            body: JSON.stringify({
+                name: fio[1],
+                patronymic: fio[2],
+                surname: fio[0],
+                genderId : genderId
+            }),
+        })
+            .then(response => response.json())
+            .then(json => {
+                const persons = json.items.map(item => ({
+                    id: item.id,
+                    name: item.surname + ' ' + item.name + ' ' + item.patronymic
+                }));
+                setOptions(persons);
+                setIsLoading(false);
+            })
+            .catch(e => {
+                console.error(e);
+                setIsLoading(false);
+            });
+    };
 
     const handleSubmit = async () => {
         try {
-            let res = await fetch("http://localhost:8989/web/person/create", {
+            let response = await fetch("http://localhost:8989/web/person/create", {
                 method: "POST",
                 headers: {
                     'Access-Control-Allow-Methods': 'POST',
@@ -46,8 +87,7 @@ export function CreatePerson() {
                     about: about
                 }),
             });
-            const response = await res.json();
-            if (res.status === 200) {
+            if (response.status === 200) {
                 setName(null);
                 setPatronymic(null);
                 setSurname(null);
@@ -58,6 +98,7 @@ export function CreatePerson() {
                 setFatherId(null);
                 setMotherId(null);
                 setAbout(null);
+                onJournalUpdate();
                 handleClose();
             } else {
                 console.log(response);
@@ -142,16 +183,42 @@ export function CreatePerson() {
                                 />
                             </Form.Group>
                             <Form.Label>Мама</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Мама"
-                                onChange={(e) => setMotherId(e.target.value)}
-                            />
+                            <AsyncTypeahead
+                                id="mother-autocomplete"
+                                isLoading={isLoading}
+                                filterBy={() => true}
+                                labelKey="name"
+                                minLength={3}
+                                onSearch={query => handleSearch(query, 2)}
+                                options={options}
+                                onChange={selected => {
+                                    const selectedMother = selected[0];
+                                    if (selectedMother) {
+                                        setMotherId(selectedMother.id);
+                                    } else {
+                                        setMotherId(null);
+                                    }
+                                }}
+                                placeholder="Фамилия Имя Отчество">
+                            </AsyncTypeahead>
                             <Form.Label>Папа</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Папа"
-                                onChange={(e) => setFatherId(e.target.value)}
+                            <AsyncTypeahead
+                                id="father-autocomplete"
+                                isLoading={isLoading}
+                                filterBy={() => true}
+                                labelKey="name"
+                                minLength={3}
+                                onSearch={query => handleSearch(query, 1)}
+                                options={options}
+                                onChange={selected => {
+                                    const selectedFather = selected[0];
+                                    if (selectedFather) {
+                                        setFatherId(selectedFather.id);
+                                    } else {
+                                        setFatherId(null);
+                                    }
+                                }}
+                                placeholder="Фамилия Имя Отчество"
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">

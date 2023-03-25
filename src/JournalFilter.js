@@ -20,7 +20,7 @@ export function JournalFilter() {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        // handleSubmit();
+        callRequest();
     }, []);
 
     const callRequest = async () => {
@@ -59,6 +59,7 @@ export function JournalFilter() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setPersons([]);
             const response = await callRequest();
             setPersons(response.items);
         } catch (err) {
@@ -68,51 +69,56 @@ export function JournalFilter() {
     };
 
     return (
-        <div className='container'>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={name}
-                    placeholder="Имя"
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                    type="text"
-                    value={patronymic}
-                    placeholder="Отчество"
-                    onChange={(e) => setPatronymic(e.target.value)}
-                />
-                <input
-                    type="text"
-                    value={surname}
-                    placeholder="Фамилия"
-                    onChange={(e) => setSurname(e.target.value)}
-                />
-                <input
-                    type="text"
-                    value={lastSurname}
-                    placeholder="Предыдущая фамилия"
-                    onChange={(e) => setLastSurname(e.target.value)}
-                />
-                <input
-                    type="date"
-                    value={birthday}
-                    placeholder="Дата рождения"
-                    onChange={(e) => setBirthday(e.target.value)}
-                />
-                <input
-                    type="date"
-                    value={deathday}
-                    placeholder="Дата смерти"
-                    onChange={(e) => setDeathday(e.target.value)}
-                />
+        <div>
+            <div className='filter'>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        value={name}
+                        placeholder="Имя"
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        value={patronymic}
+                        placeholder="Отчество"
+                        onChange={(e) => setPatronymic(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        value={surname}
+                        placeholder="Фамилия"
+                        onChange={(e) => setSurname(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        value={lastSurname}
+                        placeholder="Предыдущая фамилия"
+                        onChange={(e) => setLastSurname(e.target.value)}
+                    />
+                    <input
+                        type="date"
+                        value={birthday}
+                        placeholder="Дата рождения"
+                        onChange={(e) => setBirthday(e.target.value)}
+                    />
+                    <input
+                        type="date"
+                        value={deathday}
+                        placeholder="Дата смерти"
+                        onChange={(e) => setDeathday(e.target.value)}
+                    />
+                    <button type="submit">Поиск</button>
+                    <div className="message">{message ? <p>{message}</p> : null}</div>
+                </form>
+            </div>
 
-                <button type="submit">Поиск</button>
-                <div className="message">{message ? <p>{message}</p> : null}</div>
-            </form>
-
-            <CreatePerson/>
-            <Table persons={persons}/>
+            <div className="createButton">
+                <CreatePerson onJournalUpdate={handleSubmit}/>
+            </div>
+            <div className="journal">
+                <Table persons={persons} onJournalUpdate={handleSubmit}/>
+            </div>
         </div>
     );
 

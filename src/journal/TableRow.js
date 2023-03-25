@@ -1,7 +1,7 @@
 import TableCell from "./TableCell";
 import PersonEdit from "../PersonEdit";
 
-const TableRow = ({person}) => {
+const TableRow = ({person, onJournalUpdate}) => {
     const {
         id,
         name,
@@ -28,7 +28,7 @@ const TableRow = ({person}) => {
             <TableCell item={fatherFullName} />
             <TableCell item={motherFullName} />
             <TableCell item={about} />
-            <PersonEdit personId={id}/>
+            <PersonEdit personId={id} onJournalUpdate={onJournalUpdate}/>
         </div>
     )
 };

@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-function PersonEdit(props) {
-
-    const { personId } = props;
+function PersonEdit({personId, onJournalUpdate}) {
 
     const [id, setId] = useState(null);
     const [name, setName] = useState(null);
@@ -27,9 +25,21 @@ function PersonEdit(props) {
     const [options, setOptions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleClose = () => setShow(false);
+    const [selectedMother, setSelectedMother] = useState([]);
+    const [selectedFather, setSelectedFather] = useState([]);
+
+    const handleClose = () => {
+        setShow(false)
+    };
+
     const handleShow = async () => {
+        setIsLoading(true);
+        await fetchPersonData();
+        setIsLoading(false);
         setShow(true);
+    }
+
+    const fetchPersonData = async () => {
         const res = await fetch("http://localhost:8989/web/person/get-by-id", {
             method: "POST",
             headers: {
@@ -58,10 +68,17 @@ function PersonEdit(props) {
             setMotherId(response.motherId);
             setMotherName(response.motherFullName);
             setAbout(response.about);
+
+            setSelectedMother(motherId && motherName ? [{ id: motherId, name: motherName }] : []);
+            setSelectedFather(fatherId && fatherName ? [{ id: fatherId, name: fatherName }] : []);
         } else {
             console.log(response);
         }
     }
+
+    useEffect(() => {
+        fetchPersonData();
+    }, []);
 
     const handleSubmit = async () => {
         try {
@@ -101,6 +118,7 @@ function PersonEdit(props) {
                 setMotherId(null);
                 setMotherName(null);
                 setAbout(null);
+                onJournalUpdate();
                 handleClose();
             } else {
                 console.log(res);
@@ -137,7 +155,6 @@ function PersonEdit(props) {
                     id: item.id,
                     name: item.surname + ' ' + item.name + ' ' + item.patronymic
                 }));
-                console.log(persons);
                 setOptions(persons);
                 setIsLoading(false);
             });
@@ -229,11 +246,16 @@ function PersonEdit(props) {
                                 filterBy={() => true}
                                 labelKey="name"
                                 minLength={3}
-                                // defaultInputValue={motherName.length > 0 ? motherName : null}
+                                defaultSelected={selectedMother}
                                 onSearch={query => handleSearch(query, 2)}
                                 options={options}
                                 onChange={selected => {
-                                    setMotherId(selected[0].id);
+                                    const selectedMother = selected[0];
+                                    if (selectedMother) {
+                                        setMotherId(selectedMother.id);
+                                    } else {
+                                        setMotherId(null);
+                                    }
                                 }}
                                 placeholder="Фамилия Имя Отчество">
                             </AsyncTypeahead>
@@ -244,14 +266,19 @@ function PersonEdit(props) {
                                 filterBy={() => true}
                                 labelKey="name"
                                 minLength={3}
-                                // defaultInputValue={fatherName.length > 0 ? fatherName : null}
+                                defaultSelected={selectedFather}
                                 onSearch={query => handleSearch(query, 1)}
                                 options={options}
                                 onChange={selected => {
-                                    setFatherId(selected[0].id);
+                                    const selectedFather = selected[0];
+                                    if (selectedFather) {
+                                        setFatherId(selectedFather.id);
+                                    } else {
+                                        setFatherId(null);
+                                    }
                                 }}
-                                placeholder="Фамилия Имя Отчество">
-                            </AsyncTypeahead>
+                                placeholder="Фамилия Имя Отчество"
+                            />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>О человеке</Form.Label>
