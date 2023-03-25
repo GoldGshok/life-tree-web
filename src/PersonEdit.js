@@ -80,7 +80,7 @@ function PersonEdit({personId, onJournalUpdate}) {
         fetchPersonData();
     }, []);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
         try {
             let res = await fetch("http://localhost:8989/web/person/update", {
                 method: "POST",
@@ -118,7 +118,7 @@ function PersonEdit({personId, onJournalUpdate}) {
                 setMotherId(null);
                 setMotherName(null);
                 setAbout(null);
-                onJournalUpdate();
+                onJournalUpdate(e);
                 handleClose();
             } else {
                 console.log(res);

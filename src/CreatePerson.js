@@ -63,7 +63,7 @@ export function CreatePerson({onJournalUpdate}) {
             });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
         try {
             let response = await fetch("http://localhost:8989/web/person/create", {
                 method: "POST",
@@ -98,7 +98,7 @@ export function CreatePerson({onJournalUpdate}) {
                 setFatherId(null);
                 setMotherId(null);
                 setAbout(null);
-                onJournalUpdate();
+                onJournalUpdate(e);
                 handleClose();
             } else {
                 console.log(response);
