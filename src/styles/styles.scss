@@ -1,0 +1,58 @@
+.table {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.table__row {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(140px, 1fr));
+  text-align: center;
+  min-height: 40px;
+  overflow-wrap: break-word;
+  grid-auto-rows: minmax(40px, auto);
+
+  &--header {
+    background-color: lightgray;
+    font-weight: bold;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    width: 100%;
+  }
+}
+
+.table__cell {
+  border: 1px solid #999;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  word-wrap: break-word;
+
+  label {
+    border: none;
+    width: 90%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.filter {
+  width: 100%;
+  margin-top: 20px;
+  margin-left: 20%;
+  input:not(:last-child) {
+    margin-right: 10px;
+  }
+}
+
+.createButton {
+  margin-top: 10px;
+  margin-left: 50%;
+}
