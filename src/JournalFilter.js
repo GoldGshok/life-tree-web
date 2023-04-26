@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Table from "./journal/Table";
 import './styles/styles.scss';
 import {CreatePerson} from "./CreatePerson";
+import Button from "react-bootstrap/Button";
 
 export function JournalFilter() {
 
@@ -116,6 +117,11 @@ export function JournalFilter() {
             <div className="createButton">
                 <CreatePerson onJournalUpdate={handleSubmit}/>
             </div>
+
+            <div className="watchTree">
+                <a href="tree/tree.html'">Построить древо жизни</a>
+            </div>
+
             <div className="journal">
                 <Table persons={persons} onJournalUpdate={handleSubmit}/>
             </div>
