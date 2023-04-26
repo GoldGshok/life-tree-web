@@ -43,7 +43,7 @@ export function JournalFilter() {
                 // genderId: genderId,
                 // fatherId: fatherId,
                 // motherId: motherId,
-                limit : 10,
+                limit : 100,
                 offset : 0
             }),
         });
