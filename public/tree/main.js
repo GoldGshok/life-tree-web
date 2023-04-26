@@ -21,9 +21,6 @@ function init(my_array) {
 
             // use a custom layout, defined below
             layout: $(GenogramLayout, { direction: 90, layerSpacing: 50, columnSpacing: 40 })
-            // layout: $(GenogramLayout, { direction: 90, layerSpacing: 30, columnSpacing: 10 })
-            // layout: $(go.TreeLayout, { angle: 90, layerSpacing: 35 })
-
         }
     );
 
@@ -35,8 +32,8 @@ function init(my_array) {
                 $(go.TextBlock, { margin: 3, textAlign: "center", maxSize: new go.Size(80, NaN) })
             ),
             $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "n")),
-            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "bday")),
-            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "dday"))
+            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "birthday")),
+            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "deathday"))
         )
     );
 
@@ -48,8 +45,8 @@ function init(my_array) {
                 $(go.TextBlock, { margin: 10, textAlign: "center", maxSize: new go.Size(80, NaN) })
             ),
             $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "n")),
-            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "bday")),
-            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "dday"))
+            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "birthday")),
+            $(go.TextBlock, { textAlign: "center", maxSize: new go.Size(80, NaN) }, new go.Binding("text", "deathday"))
         )
     );
 
@@ -85,17 +82,14 @@ function load_localstorage() {
     // https://habr.com/post/349164/
     try {
         let returnObj = JSON.parse(localStorage.getItem("json_db"));
-        // if (myDiagram != null) myDiagram.clearHighlighteds();
 
         if (returnObj != null) {
             // Чтобы не было ошибки
             init(returnObj);
         }
-        // } else {
-        //     let res = confirm("Это демонстрация прототипа проекта genogram.\n\nДля работы необходимо загрузить файл с соотвествующими полями в формате csv или json.\n\nВы можете загрузить преднастроенное семейное дерево разработчика данного проекта.\n\nДля это нажмите 'OK'.");
-        //     if (res) { load_url_file(); }
-        // }
-    } catch (e) { alert(e); }
+    } catch (e) {
+        alert(e);
+    }
 }
 
 function remove_cur_diagram() {
@@ -108,9 +102,8 @@ function remove_cur_diagram() {
 }
 
 function load_url_file() {
-
     const request = new XMLHttpRequest();
-    const url = "./genogram.json";
+    const url = "http://localhost:8989/web/tree/get-tree-data";
     const params = "";
 
     request.open("GET", url, true);
@@ -121,7 +114,6 @@ function load_url_file() {
         if (request.readyState === 4 && request.status === 200) {
             let obj = request.response;
 
-            // console.log(obj);
             let parse = JSON.parse(obj);
             // console.log(parse);
             localStorage.setItem("json_db", JSON.stringify(parse));
@@ -130,9 +122,7 @@ function load_url_file() {
             load_localstorage();
         }
     });
-
     request.send(params);
-
 };
 
 function clear_localstorage() {
@@ -154,7 +144,6 @@ function load_file() {
         // console.log(arrayBuffer);
         console.log(binaryString);
         // init(parse);
-
 
         // check file ext
         // https://ru.stackoverflow.com/questions/468741/Как-проверить-размер-и-расширение-файла-до-загрузки-на-сервер

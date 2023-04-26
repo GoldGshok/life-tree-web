@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 
 export function JournalFilter() {
 
+    const [showTreePage, setShowTreePage] = useState(false);
     const [persons, setPersons] = useState({ persons : []})
 
     const [name, setName] = useState(null);
@@ -61,6 +62,7 @@ export function JournalFilter() {
         e.preventDefault();
         try {
             setPersons([]);
+            hideTreePage();
             const response = await callRequest();
             setPersons(response.items);
         } catch (err) {
@@ -68,6 +70,24 @@ export function JournalFilter() {
             return [];
         }
     };
+
+    function loadTreePage() {
+        const iframe = document.createElement("iframe");
+        iframe.src = "tree.html";
+        iframe.width = "100%";
+        iframe.height = "850px";
+        document.getElementById("tree-page-container").appendChild(iframe);
+        setShowTreePage(true);
+    }
+
+    function hideTreePage() {
+        const treePageContainer = document.getElementById("tree-page-container");
+        const iframe = treePageContainer.querySelector("iframe");
+        if (iframe) {
+            treePageContainer.removeChild(iframe);
+        }
+        setShowTreePage(false);
+    }
 
     return (
         <div>
@@ -118,9 +138,10 @@ export function JournalFilter() {
                 <CreatePerson onJournalUpdate={handleSubmit}/>
             </div>
 
-            <div className="watchTree">
-                <a href="tree/tree.html'">Построить древо жизни</a>
-            </div>
+            {!showTreePage && (
+                <Button onClick={loadTreePage}>Загрузить страницу Tree</Button>
+            )}
+            <div id="tree-page-container"></div>
 
             <div className="journal">
                 <Table persons={persons} onJournalUpdate={handleSubmit}/>

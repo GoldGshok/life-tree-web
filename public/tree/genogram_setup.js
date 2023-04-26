@@ -2,11 +2,11 @@
 // create and initialize the Diagram.model given an array of node data representing people
 function setupDiagram(diagram, array, focusId) {
 
-  for (let i = 0; i < array.length; i++)
-  {
-    array[i]['n'] = get_full_name(array[i]);
+  // for (let i = 0; i < array.length; i++)
+  // {
+    // array[i]['n'] = get_full_name(array[i]);
     //array[i]['l'] = get_life(array[i]);
-  }
+  // }
   //console.log(array);
 
   setupModel(diagram, array);
